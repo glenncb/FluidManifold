@@ -16,7 +16,7 @@
 | IO6      | LEDSI             | O                 | serial status LED (WS2812B LED1 DIN)            |
 | IO7      | ERRLED            | O, low            | red error LED (D2, active low)                  |
 | IO8      |                   |                   | NC                                              |
-| IO9      | VACUUM_SWITCH     | I, high           | fixed setpoint vacuum switch (J13)              |
+| IO9      | VACUUM_SWITCH     | I, low            | fixed setpoint vacuum switch (J13)              |
 | IO10     | FAN_ALERT         | I, low            | EMC2302 fan controller alert (U15 ALERT)        |
 | IO11     | BOOST_REGULATOR   | O                 | boost pressure regulator solenoid (U5 1B, J10)  |
 | IO12     | SAMPLE_REGULATOR  | O                 | sample pressure regulator solenoid (U5 2B, J11) |
