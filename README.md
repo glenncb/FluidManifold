@@ -95,8 +95,6 @@ The register map is defined in `config/modbusmap.xlsx` and regenerated at build 
 | 18 | WASTE_CATCHER | Waste catcher solenoid |
 | 19 | DROP_TRAY | Drip tray solenoid |
 | 20 | SAMPLE_STATION | Sample station illumination LED |
-| 22 | SHE_BOOST | Sheath boost (NC — not used on this board) |
-| 23 | SHE_ATM | Sheath atmosphere (NC — not used on this board) |
 
 ### Discrete Inputs / Contacts (FC02)
 
@@ -149,13 +147,14 @@ The register map is defined in `config/modbusmap.xlsx` and regenerated at build 
 
 | Signal | Range | Notes |
 |--------|-------|-------|
-| Sheath pressure (analog) | 0–50 PSI | ADS112C04 AIN0, ADC correction factor 1.6804/1.12 |
+| Sheath pressure (analog) | ±5 PSI differential | ADS112C04 AIN0, ADC correction factor 1.6804/1.12 |
 | Omega pressure | 0–150 PSI | ADS112C04 AIN1 |
-| Analog setpoint (DAC) | 0–50 PSI | MCP4725, DAC correction factor 1.109 |
-| Digital setpoint (Alicat) | 0–50 PSI | Alicat RS-485, default 19200 baud |
+| Analog setpoint (DAC) | ±5 PSI differential | MCP4725, DAC correction factor 1.109 |
+| Digital setpoint (Alicat) | ±5 PSI differential | Alicat RS-485, default 19200 baud |
 
 ## Revision History
 
 | Version | Date | Notes |
 |---------|------|-------|
+| 0.11 | 2026-06-20 | Removed SHE_BOOST/SHE_ATM (NovaCart artifacts); fixed VACUUM_SWITCH active-low polarity; corrected Alicat pressure range to ±5 PSI differential; corrected SAMPLE_STATION to illumination LED |
 | 0.10 | 2026-06-19 | Initial version, ported from NovaCart template, updated for Rev B PCB GPIO assignments |

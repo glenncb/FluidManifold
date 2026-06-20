@@ -18,8 +18,9 @@
 // Modbus address for this device (set to same as board ID for now)
 #define MODBUS_ADDR BOARD_ID
 
-#define REVISION 0.10
+#define REVISION 0.11
 /* Revision history
+ * 0.11 - 06/20/2026  - removed SHE_BOOST/SHE_ATM (NovaCart artifacts), fixed VACUUM_SWITCH active-low polarity, corrected Alicat pressure range to ±5 PSI differential, updated SAMPLE_STATION description to illumination LED
  * 0.10 - 06/19/2026  - initial version ported from NovaCart, updated GPIO pin assignments for Rev B PCB
  */
 
@@ -94,8 +95,9 @@ extern fsmstates_e fsm_state, fsm_nextstate, fsm_laststate;
 extern unsigned char fsmcolor, prevfsmcolor;
 extern uint16_t faultlpcnt;
 
-// regulator set/monitor full scale pressure value in PSI
-#define REG_MAXPRESS 50.0
+// regulator set/monitor full scale pressure value in PSI (differential, ±5 PSI)
+#define REG_MAXPRESS  5.0
+#define REG_MINPRESS -5.0
 #define OMEGA_MAXPRESS 150.0
 // correction factor to compensate for resistive divider on pressure monitor (10K/6.65K = 3.0V full scale, vs. 5.0V ADC Vref full scale)
 #define REG_ADC_CORRECTION (1.6804/1.12)

@@ -22,8 +22,6 @@ typedef enum {
     COIL_WASTE_CATCHER=18,
     COIL_DROP_TRAY=19,
     COIL_SAMPLE_STATION=20,
-    COIL_SHE_BOOST=22,
-    COIL_SHE_ATM=23,
 } modcoilnums_t;
 
 // Contacts (discrete inputs)
