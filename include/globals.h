@@ -18,8 +18,9 @@
 // Modbus address for this device (set to same as board ID for now)
 #define MODBUS_ADDR BOARD_ID
 
-#define REVISION 0.11
+#define REVISION 0.12
 /* Revision history
+ * 0.12 - 06/22/2026  - calibrated adc/dac values
  * 0.11 - 06/20/2026  - removed SHE_BOOST/SHE_ATM (NovaCart artifacts), fixed VACUUM_SWITCH active-low polarity, corrected Alicat pressure range to ±5 PSI differential, updated SAMPLE_STATION description to illumination LED
  * 0.10 - 06/19/2026  - initial version ported from NovaCart, updated GPIO pin assignments for Rev B PCB
  */

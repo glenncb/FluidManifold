@@ -21,7 +21,7 @@ const bitresource_t coilmap[] = {
   { .num=16, .name="NOZZLE2", .acc=RES_RW, .init=0, .drvr=DRVR_GPIO, .drvaddr=37, .drvchan=8 },
   { .num=17, .name="NOZZLE2_SELECT", .acc=RES_RW, .init=0, .drvr=DRVR_GPIO, .drvaddr=38, .drvchan=9 },
   { .num=18, .name="WASTE_CATCHER", .acc=RES_RW, .init=0, .drvr=DRVR_GPIO, .drvaddr=39, .drvchan=10 },
-  { .num=19, .name="DROP_TRAY", .acc=RES_RW, .init=0, .drvr=DRVR_GPIO, .drvaddr=40, .drvchan=11 },
+  { .num=19, .name="DRIP_TRAY", .acc=RES_RW, .init=0, .drvr=DRVR_GPIO, .drvaddr=40, .drvchan=11 },
   { .num=20, .name="SAMPLE_STATION", .acc=RES_RW, .init=0, .drvr=DRVR_GPIO, .drvaddr=41, .drvchan=12 },
   { .num=0, .name=NULL, .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0,  .drvchan=0 }
 };
@@ -70,6 +70,7 @@ const wordresource_t inregmap[] = {
   { .num=17, .name="PRESSURE_MON_DIGITAL", .acc=RES_RO, .init=0, .fmt='f', .len=4, .drvr=DRVR_ALIREG, .drvaddr=0, .drvchan=0 },
   { .num=19, .name="OMEGA_PRESSURE", .acc=RES_RO, .init=0, .fmt='f', .len=4, .drvr=DRVR_ADC, .drvaddr=0, .drvchan=1 },
   { .num=21, .name="LASER_TEMP", .acc=RES_RO, .init=0, .fmt='f', .len=4, .drvr=DRVR_ADC, .drvaddr=0, .drvchan=2 },
+  { .num=23, .name="MAN_TEMP", .acc=RES_RO, .init=0, .fmt='f', .len=4, .drvr=DRVR_ADC, .drvaddr=0, .drvchan=3 },
   { .num=0, .name=NULL, .acc=RES_RO, .init=0, .fmt=0, .len=0, .drvr=DRVR_NONE, .drvaddr=0,  .drvchan=0 }
 };
 
@@ -104,18 +105,20 @@ void modAliRegInit(void) {
 // DAC min/max values
 //--------------------------------------------------------------------
 void modDacMinMax(void) {
-  dac.SetMax(static_cast<CHANNEL_SELECT>(0), 45.0);
-  dac.SetMin(static_cast<CHANNEL_SELECT>(0), 0.0);
+  dac.SetMax(static_cast<CHANNEL_SELECT>(0), 5.0);
+  dac.SetMin(static_cast<CHANNEL_SELECT>(0), -5.0);
 } // end of DAC min/max initialization 
 //--------------------------------------------------------------------
 // ADC min/max values
 //--------------------------------------------------------------------
 void modAdcMinMax(void) {
-  adc[0].SetMax(0, 5.49);
-  adc[0].SetMin(0, -5.49);
+  adc[0].SetMax(0, 6.0);
+  adc[0].SetMin(0, -5.0);
   adc[0].SetMax(1, 1000.0);
   adc[0].SetMin(1, 0.0);
   adc[0].SetMax(2, 104.498);
   adc[0].SetMin(2, -122.648);
+  adc[0].SetMax(3, 104.498);
+  adc[0].SetMin(3, -122.648);
 } // end of SPI ADC min/max initialization 
 //####################################################################

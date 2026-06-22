@@ -20,7 +20,7 @@ typedef enum {
     NOZZLE2 = 16,
     NOZZLE2_SELECT = 17,
     WASTE_CATCHER = 18,
-    DROP_TRAY = 19,
+    DRIP_TRAY = 19,
     SAMPLE_STATION = 20,
 } mod_coils_t;
 
@@ -66,6 +66,7 @@ typedef enum {
     PRESSURE_MON_DIGITAL = 17,
     OMEGA_PRESSURE = 19,
     LASER_TEMP = 21,
+    MAN_TEMP = 23,
 } mod_inregs_t;
 
 // prototypes for the GPIO initialization

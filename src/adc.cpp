@@ -111,8 +111,8 @@ void modr_ADC(uint16_t *val, uint32_t drvaddr, int8_t drvchan)
         if(!rawread) // negative channel number indicates we want to perform a raw read
         {
             dv = adc[drvaddr].CodeToValue(uv, drvchan);
-#if MODBUS_DEBUG
             fv = (float) dv;
+#if MODBUS_DEBUG
             Serial.printf("modr_ADC: channel %d = %.2f (code %ld)\n", drvchan, fv, uv);
             Serial.printf("modr_ADC: channel %d:  maxval=%f minval=%f\n", drvchan, adc[drvaddr].GetMax((uint8_t) drvchan), adc[drvaddr].GetMin((uint8_t) drvchan));
 #endif
