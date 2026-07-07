@@ -15,6 +15,7 @@
 // definitions for modbus server
 #include "modbus.h"
 #include "modbusmap.h"
+#include "modbusota.h"
 #include "globals.h"
 #include "pins.h"
 
@@ -91,5 +92,7 @@ void modbusSetup()
   xSemaphoreGive(modbusInUse);
   // create the coil, contact, input register, and holding registers
   modbusRegSetup(&MB);
+  // initialize OTA firmware update over modbus (after the registers exist)
+  modbusOTASetup();
   modbusStartServer();
 }

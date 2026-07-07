@@ -22,6 +22,9 @@ typedef enum {
     WASTE_CATCHER = 18,
     DRIP_TRAY = 19,
     SAMPLE_STATION = 20,
+    FWUPDSTART = 100,
+    FWUPDEND = 101,
+    FWUPDABORT = 102,
 } mod_coils_t;
 
 // Modbus Discrete Inputs (contacts)
@@ -49,6 +52,9 @@ typedef enum {
     FANPID_KD = 20,
     PRESSURE_SET_ANALOG = 22,
     PRESSURE_SET_DIGITAL = 24,
+    FWSIZE = 100,
+    FWCHECKSUM = 102,
+    FWDATA = 200,
 } mod_holdregs_t;
 
 // Modbus Input Registers
@@ -67,6 +73,9 @@ typedef enum {
     OMEGA_PRESSURE = 19,
     LASER_TEMP = 21,
     MAN_TEMP = 23,
+    FWUPDSTATE = 100,
+    FWUPDERR = 101,
+    FWUPDPERCENT = 102,
 } mod_inregs_t;
 
 // prototypes for the GPIO initialization

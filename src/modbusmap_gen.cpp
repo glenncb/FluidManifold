@@ -23,6 +23,9 @@ const bitresource_t coilmap[] = {
   { .num=18, .name="WASTE_CATCHER", .acc=RES_RW, .init=0, .drvr=DRVR_GPIO, .drvaddr=39, .drvchan=10 },
   { .num=19, .name="DRIP_TRAY", .acc=RES_RW, .init=0, .drvr=DRVR_GPIO, .drvaddr=40, .drvchan=11 },
   { .num=20, .name="SAMPLE_STATION", .acc=RES_RW, .init=0, .drvr=DRVR_GPIO, .drvaddr=41, .drvchan=12 },
+  { .num=100, .name="FWUPDSTART", .acc=RES_RW, .init=0, .drvr=DRVR_FWUPDSTART, .drvaddr=0, .drvchan=0 },
+  { .num=101, .name="FWUPDEND", .acc=RES_RW, .init=0, .drvr=DRVR_FWUPDEND, .drvaddr=0, .drvchan=0 },
+  { .num=102, .name="FWUPDABORT", .acc=RES_RW, .init=0, .drvr=DRVR_FWUPDABORT, .drvaddr=0, .drvchan=0 },
   { .num=0, .name=NULL, .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0,  .drvchan=0 }
 };
 
@@ -52,6 +55,9 @@ const wordresource_t holdregmap[] = {
   { .num=20, .name="FANPID_KD", .acc=RES_RW, .init=0, .fmt='f', .len=4, .drvr=DRVR_VAR, .drvaddr=(uint32_t) &fan_kd, .drvchan=0 },
   { .num=22, .name="PRESSURE_SET_ANALOG", .acc=RES_RW, .init=0, .fmt='f', .len=4, .drvr=DRVR_DAC, .drvaddr=0, .drvchan=0 },
   { .num=24, .name="PRESSURE_SET_DIGITAL", .acc=RES_RW, .init=0, .fmt='f', .len=4, .drvr=DRVR_ALIREG, .drvaddr=0, .drvchan=1 },
+  { .num=100, .name="FWSIZE", .acc=RES_RW, .init=0, .fmt='u', .len=4, .drvr=DRVR_FWSIZE, .drvaddr=0, .drvchan=0 },
+  { .num=102, .name="FWCHECKSUM", .acc=RES_RW, .init=0, .fmt='u', .len=4, .drvr=DRVR_FWCHECKSUM, .drvaddr=0, .drvchan=0 },
+  { .num=200, .name="FWDATA", .acc=RES_RW, .init=0, .fmt='u', .len=200, .drvr=DRVR_FWDATA, .drvaddr=0, .drvchan=0 },
   { .num=0, .name=NULL, .acc=RES_RO, .init=0, .fmt=0, .len=0, .drvr=DRVR_NONE, .drvaddr=0,  .drvchan=0 }
 };
 
@@ -71,6 +77,9 @@ const wordresource_t inregmap[] = {
   { .num=19, .name="OMEGA_PRESSURE", .acc=RES_RO, .init=0, .fmt='f', .len=4, .drvr=DRVR_ADC, .drvaddr=0, .drvchan=1 },
   { .num=21, .name="LASER_TEMP", .acc=RES_RO, .init=0, .fmt='f', .len=4, .drvr=DRVR_ADC, .drvaddr=0, .drvchan=2 },
   { .num=23, .name="MAN_TEMP", .acc=RES_RO, .init=0, .fmt='f', .len=4, .drvr=DRVR_ADC, .drvaddr=0, .drvchan=3 },
+  { .num=100, .name="FWUPDSTATE", .acc=RES_RO, .init=0, .fmt='u', .len=2, .drvr=DRVR_FWUPDSTATE, .drvaddr=0, .drvchan=0 },
+  { .num=101, .name="FWUPDERR", .acc=RES_RO, .init=0, .fmt='u', .len=2, .drvr=DRVR_FWUPDERR, .drvaddr=0, .drvchan=0 },
+  { .num=102, .name="FWUPDPERCENT", .acc=RES_RO, .init=0, .fmt='u', .len=2, .drvr=DRVR_FWUPDPERCENT, .drvaddr=0, .drvchan=0 },
   { .num=0, .name=NULL, .acc=RES_RO, .init=0, .fmt=0, .len=0, .drvr=DRVR_NONE, .drvaddr=0,  .drvchan=0 }
 };
 

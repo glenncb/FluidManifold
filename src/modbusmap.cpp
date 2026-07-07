@@ -13,6 +13,7 @@
 #include "modbusmap_gen.h"
 #include "eeprom_acc.h"
 #include "serled.h"
+#include "modbusota.h"
 
 // keep track of highest register written on a multi-register write as there is no callback for write multiple registers
 int multireg_wr_regnum = 0;
@@ -358,6 +359,9 @@ bool mod_drvrGetBit(uint16_t regaddr, const bitresource_t *rp)
     case DRVR_GPIO:
       bitval = pinGPIO[drvchan].read();
       break;
+    case DRVR_FWUPDSTART: bitval = modr_FWUPDSTART(); break;
+    case DRVR_FWUPDEND:   bitval = modr_FWUPDEND();   break;
+    case DRVR_FWUPDABORT: bitval = modr_FWUPDABORT(); break;
     default:
       Serial.printf("mod_drvrGetBit: Error: driver %d not implemnted\n", drvr);
       return false;
@@ -375,6 +379,9 @@ bool mod_drvrSetBit(bool bitval, uint16_t regaddr, const bitresource_t *rp)
     case DRVR_GPIO:
       pinGPIO[drvchan].setLevel(bitval);
       break;
+    case DRVR_FWUPDSTART: modw_FWUPDSTART(bitval); break;
+    case DRVR_FWUPDEND:   modw_FWUPDEND(bitval);   break;
+    case DRVR_FWUPDABORT: modw_FWUPDABORT(bitval); break;
     default:
       Serial.printf("mod_drvrSetBit: Error: driver %d not implemnted\n", drvr);
   }
@@ -397,6 +404,11 @@ uint16_t mod_drvrGet(uint16_t regaddr, const wordresource_t *rp, bool ishreg)
   int8_t drvchan = rp->drvchan;
 
   int offset = regaddr - rp->num;
+
+  // FWDATA firmware stream bypasses the MAXDRVREGS-sized regvals[] buffer (readback, non-critical)
+  if(drvr == DRVR_FWDATA)
+    return modr_FWDATAword(regaddr, rp);
+
 #if MODBUS_DEBUG
   Serial.printf("mod_drvrGet: regaddr %d, offset %d, len %d, ishreg %d\n", regaddr, offset, rp->len, ishreg);
 #endif
@@ -444,6 +456,11 @@ uint16_t mod_drvrGet(uint16_t regaddr, const wordresource_t *rp, bool ishreg)
         modr_SERLED(regvals, drvaddr, drvchan);
         val = regvals[0];
         break;
+      case DRVR_FWSIZE:       modr_FWSIZE(regvals);      break;
+      case DRVR_FWCHECKSUM:   modr_FWCHECKSUM(regvals);  break;
+      case DRVR_FWUPDSTATE:   val = modr_FWUPDSTATE();   break;
+      case DRVR_FWUPDERR:     val = modr_FWUPDERR();     break;
+      case DRVR_FWUPDPERCENT: val = modr_FWUPDPERCENT(); break;
       default:
         Serial.printf("cbSet: Error: driver %d not implemented for register %s\n", drvr, rp->name);
         break;
@@ -467,9 +484,14 @@ uint16_t mod_drvrSet(uint16_t val, uint16_t regaddr, const wordresource_t *rp)
   uint32_t drvaddr = rp->drvaddr;
   int8_t drvchan = rp->drvchan;
   int offset = regaddr - rp->num;
+
+  // FWDATA firmware stream bypasses the MAXDRVREGS-sized regvals[] buffer (200-byte block)
+  if(drvr == DRVR_FWDATA)
+    return modw_FWDATAblock(val, regaddr, rp);
+
   // check if the register of a multi-register write is in range
   if((offset < 0) || (offset >= (rp->len+1)/2) || (offset >= MAXDRVREGS)) // out of range
-  { 
+  {
     if(offset >= MAXDRVREGS) { ESP_LOGE("mod_drvrSet", "BUG: register number %d of register group %s: offset %d exceeds MAXDRVREGS (%d)", regaddr, rp->name, offset, MAXDRVREGS); }
     else { ESP_LOGE("mod_drvrSet", "BUG: register number %d of register group %s: offset %d out of range!:", regaddr, rp->name, offset); }
     return val; 
@@ -517,6 +539,8 @@ uint16_t mod_drvrSet(uint16_t val, uint16_t regaddr, const wordresource_t *rp)
       case DRVR_SERLED:
         modw_SERLED(regvals, drvaddr, drvchan);
         break;
+      case DRVR_FWSIZE:     modw_FWSIZE(regvals);     break;
+      case DRVR_FWCHECKSUM: modw_FWCHECKSUM(regvals); break;
       default:
         Serial.printf("cbSet: Error: driver %d not implemented for register %s\n", drvr, rp->name);
         break;

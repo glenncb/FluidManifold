@@ -35,6 +35,16 @@ typedef enum {
 	DRVR_SERLED,		// serial LED driver
 	DRVR_TEMP,			// MCP9808 temperature sensor driver
 	DRVR_ALIREG,		// Alicat serial RS-485 connected regulator
+	// OTA firmware update drivers (see modbusota.cpp) - one per FW* register
+	DRVR_FWUPDSTART,	// coil: begin OTA update
+	DRVR_FWUPDEND,		// coil: finalize/validate OTA update
+	DRVR_FWUPDABORT,	// coil: abort OTA update
+	DRVR_FWSIZE,		// holdreg: 32-bit firmware image size in bytes
+	DRVR_FWCHECKSUM,	// holdreg: 32-bit firmware checksum (reserved)
+	DRVR_FWDATA,		// holdreg: multi-register firmware data block (bypasses regvals[])
+	DRVR_FWUPDSTATE,	// inreg: OTA state machine value
+	DRVR_FWUPDERR,		// inreg: OTA error code
+	DRVR_FWUPDPERCENT,	// inreg: OTA write percent complete
 } resdriver_t;
 
 // structure used to for modbus bit level resources (cois and discrete inputs)

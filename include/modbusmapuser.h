@@ -20,7 +20,7 @@ typedef enum {
     COIL_NOZZLE2=16,
     COIL_NOZZLE2_SELECT=17,
     COIL_WASTE_CATCHER=18,
-    COIL_DROP_TRAY=19,
+    COIL_DRIP_TRAY=19,
     COIL_SAMPLE_STATION=20,
 } modcoilnums_t;
 
