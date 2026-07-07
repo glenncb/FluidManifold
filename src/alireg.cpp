@@ -140,7 +140,7 @@ void ALIREG::SetPressure(float sp)
 {
     ALIREG_UART.printf("%cS%.4f\r", AddrCh(), sp);
     ALIREG_UART.readStringUntil('\r'); // consume the echo/ack
-    ESP_LOGE("ALIREG::SetPressure", "Set pressure setpoint on device %c to %.4f", AddrCh(), sp);
+    ESP_LOGI("ALIREG::SetPressure", "Set pressure setpoint on device %c to %.4f", AddrCh(), sp);
 }
 
 void modr_ALIREG(uint16_t *val, uint32_t drvaddr, uint8_t drvchan)
