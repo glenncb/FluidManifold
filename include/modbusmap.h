@@ -45,6 +45,7 @@ typedef enum {
 	DRVR_FWUPDSTATE,	// inreg: OTA state machine value
 	DRVR_FWUPDERR,		// inreg: OTA error code
 	DRVR_FWUPDPERCENT,	// inreg: OTA write percent complete
+	DRVR_FWUPDBYTES,	// inreg: 32-bit exact count of bytes actually written to flash so far
 } resdriver_t;
 
 // structure used to for modbus bit level resources (cois and discrete inputs)

@@ -38,6 +38,7 @@ uint16_t modr_FWDATAword(uint16_t regaddr, const wordresource_t *rp);   // readb
 uint16_t modr_FWUPDSTATE(void);
 uint16_t modr_FWUPDERR(void);
 uint16_t modr_FWUPDPERCENT(void);
+void modr_FWUPDBYTES(uint16_t *regvals);    // 32-bit: exact bytes written to flash so far
 
 // firmware update accumulation buffer
 extern uint8_t fwbuf[];

@@ -43,8 +43,9 @@
 // board and firmware revision information (do not modify)
 const boardinfo_t boardinfo = {.boardrev=static_cast<uint8_t>(boardtab[BOARD_ID].rev-'A'), .boardid=BOARD_ID};
 const fwinfo_t fwinfo = {.fwrev_minor=FWREV_MINOR, .fwrev_major=FWREV_MAJOR};
-
 typedef struct { ledcolor_e color1, color2; } fsmcolors_t;
+const char novafwbrd_tag[] __attribute__((used)) = "NOVAFWBOARD:" STRINGIZE(BOARD_ID);
+const char novafwver_tag[] __attribute__((used)) = "NOVAFWVER:" VERSION;
 
 const fsmcolors_t FsmColorTable[] = {
     {ledGREEN,  ledGREEN},  // RESET
@@ -102,13 +103,17 @@ void setup(void)
 
     // setup the serial console
     Serial.begin(115200);
-    delay(2000); // wait for time for console to connect
+    delay(1000); // wait for time for console to connect
 
 
     // print the revision information
     Serial.println("FluidManifold (c) 2026 Phase Three Product Development, Inc.");
     Serial.println("=============================================================");
     Serial.printf("Board %s, PCB Revision %c, Firmware Version %s\n", boardtab[BOARD_ID].name, boardtab[BOARD_ID].rev, VERSION);
+    // referencing these here (not just the __attribute__((used)) on their
+    // declarations) keeps the linker's --gc-sections pass from discarding
+    // them as unreachable - see novafwupd's README for why
+    Serial.printf("Tags: %s %s\n", novafwbrd_tag, novafwver_tag);
     Serial.println("=======================================================");
     delay(1000);
 

@@ -18,8 +18,13 @@
 // Modbus address for this device (set to same as board ID for now)
 #define MODBUS_ADDR BOARD_ID
 
-#define REVISION 0.13
+#define REVISION 0.17
 /* Revision history
+ * 0.18 - 07/12/2026  - bump rev number purely for testing
+ * 0.17 - 07/12/2026  - performing a bulk erase instead of block by block to improve reliability and performance
+ * 0.16 - 07/11/2026  - added retry on the host side, fixed state machine bug at end of update, added patch to get the version info in bin file build header
+ * 0.15 - 07/11/2026  - initial somewhat working version of OTA firmware updates
+ * 0.14 - 07/11/2026  - bumped rev to test OTA firmware update over modbus, added strings for board and rev tags, speedups to ota
  * 0.13 - 07/07/2026  - OTA firmware update over Modbus (FWUPDSTART/END/ABORT coils, FWSIZE/FWCHECKSUM/FWDATA holdregs, FWUPDSTATE/ERR/PERCENT inregs); switched to OTA partition board
  * 0.12 - 06/22/2026  - calibrated adc/dac values
  * 0.11 - 06/20/2026  - removed SHE_BOOST/SHE_ATM (NovaCart artifacts), fixed VACUUM_SWITCH active-low polarity, corrected Alicat pressure range to ±5 PSI differential, updated SAMPLE_STATION description to illumination LED

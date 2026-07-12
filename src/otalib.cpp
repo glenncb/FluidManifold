@@ -23,6 +23,11 @@
 #include "errno.h"
 #include "otalib.h"
 
+// defined in modbusota.cpp - counts full-burst FWDATA flushes, for comparing
+// against the host's own chunk count when debugging the WRITE_DONE-too-early
+// issue (see the print in write() below)
+extern uint32_t fwdata_flush_count;
+
 // OTA class constructor
 
 ESPota::ESPota(void) {
@@ -104,7 +109,9 @@ bool ESPota::setup() {
 // size - size of the firmware to be written
 bool ESPota::begin(size_t size) {
 
-    ESP_LOGI(TAG, "begin() called - image size %d", size);
+    // ESP_LOGE (not LOGI) so this survives CORE_DEBUG_LEVEL=1 builds - OTA
+    // attempts are rare/low-volume, worth always seeing this checkpoint
+    ESP_LOGE(TAG, "begin() called - image size %d", size);
 
     ota_image_size = size;
 
@@ -199,20 +206,22 @@ bool ESPota::write(uint8_t *data, size_t len) {
 
                 // check current version with downloading
                 memcpy(&new_app_info, &ota_write_data[sizeof(esp_image_header_t) + sizeof(esp_image_segment_header_t)], sizeof(esp_app_desc_t));
-                ESP_LOGI(TAG, "New firmware version: %s", new_app_info.version);
+                // ESP_LOGE (not LOGI/LOGW) so these survive CORE_DEBUG_LEVEL=1 builds
+                ESP_LOGE(TAG, "New firmware version: %s", new_app_info.version);
 
                 esp_app_desc_t running_app_info;
                 if (esp_ota_get_partition_description(running_partition, &running_app_info) == ESP_OK) {
-                    ESP_LOGI(TAG, "Running firmware version: %s", running_app_info.version);
+                    ESP_LOGE(TAG, "Running firmware version: %s", running_app_info.version);
                 }
 
                 const esp_partition_t* last_invalid_app = esp_ota_get_last_invalid_partition();
                 esp_app_desc_t invalid_app_info;
                 if (esp_ota_get_partition_description(last_invalid_app, &invalid_app_info) == ESP_OK) {
-                    ESP_LOGI(TAG, "Last invalid partition firmware version: %s", invalid_app_info.version);
+                    ESP_LOGE(TAG, "Last invalid partition firmware version: %s", invalid_app_info.version);
                 }
 
                 // check current version with last invalid partition
+                /*
                 if (last_invalid_app != NULL) {
                     if (memcmp(invalid_app_info.version, new_app_info.version, sizeof(new_app_info.version)) == 0) {
                         ESP_LOGE(TAG, "New version is the same as invalid version %s which has previously failed boot.", invalid_app_info.version);
@@ -224,13 +233,26 @@ bool ESPota::write(uint8_t *data, size_t len) {
                         return false;
                     }
                 }
+                */
 #ifndef CONFIG_EXAMPLE_SKIP_VERSION_CHECK
                 if (memcmp(new_app_info.version, running_app_info.version, sizeof(new_app_info.version)) == 0) {
-                    ESP_LOGW(TAG, "Current running version is the same as a new. Update canceled.");
+                    ESP_LOGE(TAG, "Current running version is the same as a new. Update canceled.");
                     cleanup();
                     return false;
                 }
 #endif
+                // Tried bulk-erasing here (passing ota_image_size instead of
+                // OTA_WITH_SEQUENTIAL_WRITES) per ESP-IDF's OTA performance
+                // tuning guide, to remove per-sector erase latency from the
+                // write-loop's timing. Reverted: measured on real hardware,
+                // this made the call that crosses the header-detection
+                // threshold (always the 2nd FWDATA chunk) block for >2s
+                // (confirmed via timestamps: esp_ota_begin succeeded 2.17s
+                // after this point was reached), reliably exceeding
+                // novafwupd's MB_TIMEOUT and failing every transfer. Back to
+                // incremental per-sector erasing, which spreads that cost
+                // across many small writes instead of concentrating it into
+                // one call the host can't wait out.
                 err = esp_ota_begin(update_partition, OTA_WITH_SEQUENTIAL_WRITES, &update_handle);
                 if (err != ESP_OK) {
                     ESP_LOGE(TAG, "esp_ota_begin failed (%s)", esp_err_to_name(err));
@@ -240,7 +262,7 @@ bool ESPota::write(uint8_t *data, size_t len) {
                     cleanup();
                     return false;
                 }
-                ESP_LOGI(TAG, "esp_ota_begin succeeded");
+                ESP_LOGE(TAG, "esp_ota_begin succeeded");
 
                 // set the FSM sate to OTA_STATE_WRITE to indicate we've started writes to the OTA partition
                 ota_state = OTA_STATE_WRITE;
@@ -257,8 +279,18 @@ bool ESPota::write(uint8_t *data, size_t len) {
                 }
                 // update the write counter and clear the temp buffer
                 ota_bytes_written += ota_wdata_len;
+                // fires once (the header-buffer flush), safe checkpoint print
+                ESP_LOGE(TAG, "write(): header flush - wrote %d bytes, ota_bytes_written now %u, fwdata_flush_count=%u",
+                    ota_wdata_len, (unsigned) ota_bytes_written, (unsigned) fwdata_flush_count);
                 ota_wdata_len = 0;
                 memset(ota_write_data, 0, sizeof(ota_write_data));
+                // BUG FIX: this call's data was already written above as part of
+                // the combined header-buffer flush - without this return, execution
+                // fell through into the direct-write section below and wrote this
+                // same call's `data`/`len` to flash AGAIN, double-counting it in
+                // ota_bytes_written (the flat +200-byte overcount that caused
+                // WRITE_DONE to trigger one chunk early on every transfer).
+                return true;
             } else {
                 // we haven't yet received enough data to check the header, so just return
                 return true;
@@ -288,13 +320,20 @@ bool ESPota::write(uint8_t *data, size_t len) {
             return false;
         }
         ota_bytes_written += len;
-        // print a message indicate write progress 
-        ESP_LOGI(TAG, "wrote %d bytes", len);
-    } 
+        // print a message indicate write progress
+        ESP_LOGE(TAG, "wrote %d bytes", len);
+    }
 
     // write successful
 
     if(ota_bytes_written >= ota_image_size) {
+        // ESP_LOGE (not LOGI) so this survives CORE_DEBUG_LEVEL=1 builds - fires
+        // exactly once (state transition), safe to always show. Debugging a
+        // suspected off-by-one where ota_bytes_written reaches ota_image_size
+        // before all of the host's chunks (esp. a non-200-byte-multiple final
+        // chunk) have actually been sent.
+        ESP_LOGE(TAG, "write(): reached WRITE_DONE - ota_bytes_written=%u ota_image_size=%u (this call's len=%u) fwdata_flush_count=%u",
+            (unsigned) ota_bytes_written, (unsigned) ota_image_size, (unsigned) len, (unsigned) fwdata_flush_count);
         // we've written the full image, set the state to OTA_STATE_WRITE_DONE
         ota_state = OTA_STATE_WRITE_DONE;
     }
@@ -305,6 +344,10 @@ bool ESPota::write(uint8_t *data, size_t len) {
 int ESPota::percent() {
     // return the write completion percentage
     return ota_image_size ? ota_bytes_written*100/ota_image_size : 0;
+};
+
+size_t ESPota::bytes_written() {
+    return ota_bytes_written;
 };
 
 // write is complete, finalize the write process

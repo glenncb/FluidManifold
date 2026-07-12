@@ -92,8 +92,12 @@ bool modr_FWUPDABORT(void) { return (ota.ota_state == OTA_STATE_ABORT); }
 // FWUPDABORT write - user-requested abort/cleanup
 void modw_FWUPDABORT(bool val)
 {
-    if(val)
+    if(val) {
         ota.cleanup();
+        // re-initialize so the board is immediately ready for a new attempt
+        // without requiring a reboot - see the comment on ESPota::setup()
+        ota.setup();
+    }
 }
 
 //----------------------------------------------------
@@ -110,6 +114,13 @@ void modw_FWCHECKSUM(uint16_t *regvals) { memcpy(&fw_checksum.val, regvals, 4); 
 // called once per register of an FC16 burst to FWDATA.  Accumulates each 16-bit word directly
 // into fwbuf (bypassing the MAXDRVREGS-sized regvals[] buffer), and when the top register of a
 // full burst is written, flushes the whole block to the OTA flash partition.
+// counts every full-burst flush (offset==nregs-1) - compared against the
+// host's own chunk count at the WRITE_DONE transition (see otalib.cpp) to
+// determine whether a phantom flush is coming from this callback firing more
+// often than the host's actual FC16 write count, or from write()'s own
+// internal byte accounting.
+uint32_t fwdata_flush_count = 0;
+
 uint16_t modw_FWDATAblock(uint16_t val, uint16_t regaddr, const wordresource_t *rp)
 {
     int offset = regaddr - rp->num;         // rp->num == FWDATAREG
@@ -129,6 +140,7 @@ uint16_t modw_FWDATAblock(uint16_t val, uint16_t regaddr, const wordresource_t *
     // full burst complete - flush the whole block to flash
     if(offset == nregs - 1)
     {
+        fwdata_flush_count++;
         ota.write(fwbuf, FWBUFSZ);
         multireg_wr_regnum = FWBOGUSREG;    // no pending partial data
     }
@@ -153,3 +165,7 @@ uint16_t modr_FWDATAword(uint16_t regaddr, const wordresource_t *rp)
 uint16_t modr_FWUPDSTATE(void)   { return ota.ota_state; }
 uint16_t modr_FWUPDERR(void)     { return ota.ota_errnum; }
 uint16_t modr_FWUPDPERCENT(void) { return ota.percent(); }
+void modr_FWUPDBYTES(uint16_t *regvals) {
+    uint32_t bytes = (uint32_t) ota.bytes_written();
+    memcpy(regvals, &bytes, 4);  // low word first, matches modr_FWSIZE()'s convention
+}

@@ -7,6 +7,7 @@
 #include "esp_ota_ops.h"
 
 #define OTA_REBOOT_DELAY 5
+#define CONFIG_EXAMPLE_SKIP_VERSION_CHECK 1
 
 typedef enum {
     OTA_ERR_NONE = 0,           // no error
@@ -67,6 +68,11 @@ class ESPota {
         bool write(uint8_t *data, size_t len);
         // percent() - return the write completion percentage
         int percent(void);
+        // bytes_written() - return the exact number of bytes actually written to flash
+        // so far, for the host to verify progress after a suspected lost ack rather
+        // than blindly resending (which risks a duplicate write, since this OTA
+        // protocol has no per-chunk sequence/offset tracking of its own)
+        size_t bytes_written(void);
         // end() - finalize the OTA process, verify the image, and set the new image as the boot image
         bool end(void);
         // mark_app_valid() - mark the new firmware as valid and disable auto rollback

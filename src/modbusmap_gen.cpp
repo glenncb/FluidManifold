@@ -80,6 +80,7 @@ const wordresource_t inregmap[] = {
   { .num=100, .name="FWUPDSTATE", .acc=RES_RO, .init=0, .fmt='u', .len=2, .drvr=DRVR_FWUPDSTATE, .drvaddr=0, .drvchan=0 },
   { .num=101, .name="FWUPDERR", .acc=RES_RO, .init=0, .fmt='u', .len=2, .drvr=DRVR_FWUPDERR, .drvaddr=0, .drvchan=0 },
   { .num=102, .name="FWUPDPERCENT", .acc=RES_RO, .init=0, .fmt='u', .len=2, .drvr=DRVR_FWUPDPERCENT, .drvaddr=0, .drvchan=0 },
+  { .num=103, .name="FWUPDBYTES", .acc=RES_RO, .init=0, .fmt='u', .len=4, .drvr=DRVR_FWUPDBYTES, .drvaddr=0, .drvchan=0 },
   { .num=0, .name=NULL, .acc=RES_RO, .init=0, .fmt=0, .len=0, .drvr=DRVR_NONE, .drvaddr=0,  .drvchan=0 }
 };
 

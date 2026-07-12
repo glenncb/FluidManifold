@@ -461,6 +461,7 @@ uint16_t mod_drvrGet(uint16_t regaddr, const wordresource_t *rp, bool ishreg)
       case DRVR_FWUPDSTATE:   val = modr_FWUPDSTATE();   break;
       case DRVR_FWUPDERR:     val = modr_FWUPDERR();     break;
       case DRVR_FWUPDPERCENT: val = modr_FWUPDPERCENT(); break;
+      case DRVR_FWUPDBYTES:   modr_FWUPDBYTES(regvals);  break;
       default:
         Serial.printf("cbSet: Error: driver %d not implemented for register %s\n", drvr, rp->name);
         break;

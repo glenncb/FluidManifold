@@ -76,6 +76,7 @@ typedef enum {
     FWUPDSTATE = 100,
     FWUPDERR = 101,
     FWUPDPERCENT = 102,
+    FWUPDBYTES = 103,
 } mod_inregs_t;
 
 // prototypes for the GPIO initialization
