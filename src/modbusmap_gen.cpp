@@ -26,6 +26,16 @@ const bitresource_t coilmap[] = {
   { .num=100, .name="FWUPDSTART", .acc=RES_RW, .init=0, .drvr=DRVR_FWUPDSTART, .drvaddr=0, .drvchan=0 },
   { .num=101, .name="FWUPDEND", .acc=RES_RW, .init=0, .drvr=DRVR_FWUPDEND, .drvaddr=0, .drvchan=0 },
   { .num=102, .name="FWUPDABORT", .acc=RES_RW, .init=0, .drvr=DRVR_FWUPDABORT, .drvaddr=0, .drvchan=0 },
+  { .num=110, .name="TESTCOIL0", .acc=RES_RW, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=111, .name="TESTCOIL1", .acc=RES_RW, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=112, .name="TESTCOIL2", .acc=RES_RW, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=113, .name="TESTCOIL3", .acc=RES_RW, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=114, .name="TESTCOIL4", .acc=RES_RW, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=115, .name="TESTCOIL5", .acc=RES_RW, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=116, .name="TESTCOIL6", .acc=RES_RW, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=117, .name="TESTCOIL7", .acc=RES_RW, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=118, .name="TESTCOIL8", .acc=RES_RW, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=119, .name="TESTCOIL9", .acc=RES_RW, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
   { .num=0, .name=NULL, .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0,  .drvchan=0 }
 };
 
@@ -35,6 +45,16 @@ const bitresource_t contmap[] = {
   { .num=2, .name="BOOTSW", .acc=RES_RO, .init=0, .drvr=DRVR_GPIO, .drvaddr=0, .drvchan=0 },
   { .num=10, .name="VACUUM_SWITCH", .acc=RES_RO, .init=0, .drvr=DRVR_GPIO, .drvaddr=9, .drvchan=13 },
   { .num=11, .name="FANALERT", .acc=RES_RO, .init=0, .drvr=DRVR_GPIO, .drvaddr=10, .drvchan=14 },
+  { .num=110, .name="TESTCONT0", .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=111, .name="TESTCONT1", .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=112, .name="TESTCONT2", .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=113, .name="TESTCONT3", .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=114, .name="TESTCONT4", .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=115, .name="TESTCONT5", .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=116, .name="TESTCONT6", .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=117, .name="TESTCONT7", .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=118, .name="TESTCONT8", .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
+  { .num=119, .name="TESTCONT9", .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
   { .num=0, .name=NULL, .acc=RES_RO, .init=0, .drvr=DRVR_NONE, .drvaddr=0,  .drvchan=0 }
 };
 
@@ -57,6 +77,7 @@ const wordresource_t holdregmap[] = {
   { .num=24, .name="PRESSURE_SET_DIGITAL", .acc=RES_RW, .init=0, .fmt='f', .len=4, .drvr=DRVR_ALIREG, .drvaddr=0, .drvchan=1 },
   { .num=100, .name="FWSIZE", .acc=RES_RW, .init=0, .fmt='u', .len=4, .drvr=DRVR_FWSIZE, .drvaddr=0, .drvchan=0 },
   { .num=102, .name="FWCHECKSUM", .acc=RES_RW, .init=0, .fmt='u', .len=4, .drvr=DRVR_FWCHECKSUM, .drvaddr=0, .drvchan=0 },
+  { .num=110, .name="TESTHREGS", .acc=RES_RW, .init=0, .fmt='u', .len=20, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
   { .num=200, .name="FWDATA", .acc=RES_RW, .init=0, .fmt='u', .len=200, .drvr=DRVR_FWDATA, .drvaddr=0, .drvchan=0 },
   { .num=0, .name=NULL, .acc=RES_RO, .init=0, .fmt=0, .len=0, .drvr=DRVR_NONE, .drvaddr=0,  .drvchan=0 }
 };
@@ -81,6 +102,7 @@ const wordresource_t inregmap[] = {
   { .num=101, .name="FWUPDERR", .acc=RES_RO, .init=0, .fmt='u', .len=2, .drvr=DRVR_FWUPDERR, .drvaddr=0, .drvchan=0 },
   { .num=102, .name="FWUPDPERCENT", .acc=RES_RO, .init=0, .fmt='u', .len=2, .drvr=DRVR_FWUPDPERCENT, .drvaddr=0, .drvchan=0 },
   { .num=103, .name="FWUPDBYTES", .acc=RES_RO, .init=0, .fmt='u', .len=4, .drvr=DRVR_FWUPDBYTES, .drvaddr=0, .drvchan=0 },
+  { .num=110, .name="TESTIREGS", .acc=RES_RO, .init=0, .fmt='u', .len=20, .drvr=DRVR_NONE, .drvaddr=0, .drvchan=0 },
   { .num=0, .name=NULL, .acc=RES_RO, .init=0, .fmt=0, .len=0, .drvr=DRVR_NONE, .drvaddr=0,  .drvchan=0 }
 };
 

@@ -7,6 +7,8 @@
 #include <ModbusRTU.h>
 #define MODBUS_UART Serial2
 #define MODBUS_BAUD 460800
+//validated works at 2.5Mbaud
+//#define MODBUS_BAUD 2500000
 #define MODBUS_SLAVE_ADDR MODBUS_ADDR
 #else
 #include <ModbusIP_ESP8266.h>

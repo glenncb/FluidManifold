@@ -25,6 +25,16 @@ typedef enum {
     FWUPDSTART = 100,
     FWUPDEND = 101,
     FWUPDABORT = 102,
+    TESTCOIL0 = 110,
+    TESTCOIL1 = 111,
+    TESTCOIL2 = 112,
+    TESTCOIL3 = 113,
+    TESTCOIL4 = 114,
+    TESTCOIL5 = 115,
+    TESTCOIL6 = 116,
+    TESTCOIL7 = 117,
+    TESTCOIL8 = 118,
+    TESTCOIL9 = 119,
 } mod_coils_t;
 
 // Modbus Discrete Inputs (contacts)
@@ -33,6 +43,16 @@ typedef enum {
     BOOTSW = 2,
     VACUUM_SWITCH = 10,
     FANALERT = 11,
+    TESTCONT0 = 110,
+    TESTCONT1 = 111,
+    TESTCONT2 = 112,
+    TESTCONT3 = 113,
+    TESTCONT4 = 114,
+    TESTCONT5 = 115,
+    TESTCONT6 = 116,
+    TESTCONT7 = 117,
+    TESTCONT8 = 118,
+    TESTCONT9 = 119,
 } mod_contacts_t;
 
 // Modbus Holding Registers
@@ -54,6 +74,7 @@ typedef enum {
     PRESSURE_SET_DIGITAL = 24,
     FWSIZE = 100,
     FWCHECKSUM = 102,
+    TESTHREGS = 110,
     FWDATA = 200,
 } mod_holdregs_t;
 
@@ -77,6 +98,7 @@ typedef enum {
     FWUPDERR = 101,
     FWUPDPERCENT = 102,
     FWUPDBYTES = 103,
+    TESTIREGS = 110,
 } mod_inregs_t;
 
 // prototypes for the GPIO initialization
