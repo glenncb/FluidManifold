@@ -280,7 +280,7 @@ bool ESPota::write(uint8_t *data, size_t len) {
                 // update the write counter and clear the temp buffer
                 ota_bytes_written += ota_wdata_len;
                 // fires once (the header-buffer flush), safe checkpoint print
-                ESP_LOGE(TAG, "write(): header flush - wrote %d bytes, ota_bytes_written now %u, fwdata_flush_count=%u",
+                ESP_LOGI(TAG, "write(): header flush - wrote %d bytes, ota_bytes_written now %u, fwdata_flush_count=%u",
                     ota_wdata_len, (unsigned) ota_bytes_written, (unsigned) fwdata_flush_count);
                 ota_wdata_len = 0;
                 memset(ota_write_data, 0, sizeof(ota_write_data));
@@ -321,7 +321,7 @@ bool ESPota::write(uint8_t *data, size_t len) {
         }
         ota_bytes_written += len;
         // print a message indicate write progress
-        ESP_LOGE(TAG, "wrote %d bytes", len);
+        ESP_LOGI(TAG, "wrote %d bytes", len);
     }
 
     // write successful
@@ -470,6 +470,19 @@ void ESPota::mark_app_valid() {
             // assume that if we booted and reached this code, things are healthy, mark as good
             ESP_LOGI(TAG, "Marking firmware image as good and canceling rollback");
             esp_ota_mark_app_valid_cancel_rollback();
+
+            // now that we're committed to this image, pre-erase the standby
+            // partition (the one we just booted away from) so the next OTA
+            // update's esp_ota_begin() has nothing to erase - this runs before
+            // modbusStartServer() brings up the request-processing task, so
+            // there's no live modbus transaction for it to block
+            ESP_LOGI(TAG, "Pre-erasing standby OTA partition for the next update");
+            esp_err_t erase_err = esp_ota_erase_last_boot_app_partition();
+            if (erase_err != ESP_OK) {
+                ESP_LOGW(TAG, "esp_ota_erase_last_boot_app_partition() failed (%s) - "
+                              "next OTA update will just erase inline as before",
+                    esp_err_to_name(erase_err));
+            }
         }
     }
 };

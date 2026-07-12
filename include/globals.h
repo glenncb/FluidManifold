@@ -18,9 +18,9 @@
 // Modbus address for this device (set to same as board ID for now)
 #define MODBUS_ADDR BOARD_ID
 
-#define REVISION 0.17
+#define REVISION 0.18
 /* Revision history
- * 0.18 - 07/12/2026  - bump rev number purely for testing
+ * 0.18 - 07/12/2026  - added esp_ota_erase_last_boot_app_partition on successful boot after OTA to erase the unused partition to speed updates
  * 0.17 - 07/12/2026  - performing a bulk erase instead of block by block to improve reliability and performance
  * 0.16 - 07/11/2026  - added retry on the host side, fixed state machine bug at end of update, added patch to get the version info in bin file build header
  * 0.15 - 07/11/2026  - initial somewhat working version of OTA firmware updates

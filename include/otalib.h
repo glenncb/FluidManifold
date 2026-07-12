@@ -75,7 +75,14 @@ class ESPota {
         size_t bytes_written(void);
         // end() - finalize the OTA process, verify the image, and set the new image as the boot image
         bool end(void);
-        // mark_app_valid() - mark the new firmware as valid and disable auto rollback
+        // mark_app_valid() - mark the new firmware as valid and disable auto rollback.
+        // Also erases the OTHER app partition (the one we booted from prior to this
+        // update, which - since this board's partition table has exactly two OTA
+        // slots, no factory partition - is the same partition the *next* OTA update
+        // will target) so a future esp_ota_begin() has nothing left to erase, moving
+        // that cost off the modbus write-loop's timing entirely. Only happens once,
+        // right after a genuine OTA switch-over (gated on the same PENDING_VERIFY
+        // check as the rollback-cancel itself), not on every normal boot.
         void mark_app_valid(void);
         // ota_cleanup() - cleanup routine in case of an error or for a user requested abort
         void cleanup(void);
